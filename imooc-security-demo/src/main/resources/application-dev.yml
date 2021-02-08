@@ -31,10 +31,13 @@ imooc:
     browser:
       login-type: JSON
     code:
-      urls:
-        - /myLogin
-        - /sysUser
-        - /user/1
+      sms:
+        urls:
+          - /authentication/mobile
+          - /sysUser
       image:
         size: 5
+        urls:
+          - /myLogin
+          - /user/1
 #      login-url: /login.html

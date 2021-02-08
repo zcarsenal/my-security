@@ -1,7 +1,9 @@
 package com.imooc.security.browser;
 
+import com.imooc.config.SmsAuthenticationConfig;
 import com.imooc.core.properties.SecurityProperties;
 import com.imooc.filter.ImageValidatorCodeFilter;
+import com.imooc.filter.SmsValidatorCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired private AuthenticationFailureHandler imoocAuthenticationFailureHandler;
 
   @Autowired private ImageValidatorCodeFilter imageValidatorCodeFilter;
+  @Autowired private SmsValidatorCodeFilter smsValidatorCodeFilter;
+
+  @Autowired private SmsAuthenticationConfig smsAuthenticationConfig;
 
   /**
    * 用户数据加密类
@@ -53,13 +58,14 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.addFilterBefore(imageValidatorCodeFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(smsValidatorCodeFilter, UsernamePasswordAuthenticationFilter.class)
         .formLogin()
         //        .loginPage("/my_login.html") // 自定义登录页面
         .loginPage("/authentication/require") // 先跳转到controller 在进行转发到html还是json
         .usernameParameter("username1")
         .passwordParameter("password1")
         // 告知spring-security 使用UsernamePasswordAuthenticationFilter处理认证请求
-        .loginProcessingUrl("/myLogin")
+        .loginProcessingUrl("/myLogin") //默认是login
         .successHandler(imoocAuthenticationSuccessHandler)
         .failureHandler(imoocAuthenticationFailureHandler)
         //  http.httpBasic()
@@ -80,6 +86,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         .authenticated()
         .and()
         .csrf()
-        .disable(); // 不关闭此处 登录不成功
+        .disable() // 不关闭此处 登录不成功
+        .apply(smsAuthenticationConfig); // 引入其他的配置信息
   }
 }
