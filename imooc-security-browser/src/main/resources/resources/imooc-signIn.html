@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>自定义登录页面</title>
+</head>
+<script>
+  function reloadcode() {
+    var verify = document.getElementById('safecode');
+    verify.setAttribute('src', '/code/image?' + Math.random());
+    //这里必须加入随机数不然地址相同我发重新加载
+  }
+</script>
+<body>
+<h3>注册页</h3>
+<h3>这是系统的注册页面，请到anguo.security.browser.signUpUrl属性设置自己的注册页面</h3>
+</body>
+</html>

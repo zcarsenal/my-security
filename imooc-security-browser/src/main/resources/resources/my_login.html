@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>自定义登录页面</title>
+</head>
+<script>
+  function reloadcode() {
+    var verify = document.getElementById('safecode');
+    verify.setAttribute('src', '/code/image?' + Math.random());
+    //这里必须加入随机数不然地址相同我发重新加载
+  }
+</script>
+<body>
+<h3>自定义登录页面</h3>
+<div>
+  <form action="/myLogin" method="post">
+    <div>用户名：<input type="text" name="username1"/></div>
+    <div>密码：<input type="text" name="password1"/></div>
+    <div>
+      记住我：<input type="checkbox" name="re-me" value="true"/>
+    </div>
+    <div><input type="submit" value="登录"/></div>
+    <div>
+      图形验证码：<input type="text" name="image">
+      <img id="safecode" src="/code/image?width=200" onclick="reloadcode();">
+    </div>
+  </form>
+  <br/>
+  <br/>
+  <form action="/anthentication/mobile" method="post">
+    <div>手机号：<input type="text" name="mobile" value="13820202020"/></div>
+    <div>验证码：<input type="text" name="smsCode"/>
+      <a href="/code/sms?mobile=13820202020">发送短信验证码</a>
+    </div>
+    <div><input type="submit" value="登录"/></div>
+  </form>
+  <br>
+  <br>
+  <h3>社交登录</h3>
+  <!-- /auth  SocialAuthenticationFilter 过滤器配置的前缀
+       private static final String DEFAULT_FILTER_PROCESSES_URL = "/auth";
+       qq --> providerId
+   -->
+  <a href="/qqLogin/callback.do">QQ登录</a>
+  &nbsp;&nbsp;
+  <a href="/qqLogin/weixin">微信登录</a>
+</div>
+</body>
+</html>
