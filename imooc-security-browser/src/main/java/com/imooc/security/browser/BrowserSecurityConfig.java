@@ -1,7 +1,7 @@
 package com.imooc.security.browser;
 
 import com.imooc.core.properties.SecurityProperties;
-import com.imooc.filter.ValidatorCodeFilter;
+import com.imooc.filter.ImageValidatorCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +26,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired private AuthenticationFailureHandler imoocAuthenticationFailureHandler;
 
-  @Autowired private ValidatorCodeFilter validatorCodeFilter;
+  @Autowired private ImageValidatorCodeFilter imageValidatorCodeFilter;
 
   /**
    * 用户数据加密类
@@ -52,7 +52,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.addFilterBefore(validatorCodeFilter, UsernamePasswordAuthenticationFilter.class)
+    http.addFilterBefore(imageValidatorCodeFilter, UsernamePasswordAuthenticationFilter.class)
         .formLogin()
         //        .loginPage("/my_login.html") // 自定义登录页面
         .loginPage("/authentication/require") // 先跳转到controller 在进行转发到html还是json

@@ -20,8 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * OncePerRequestFilter 保证每个请求此过滤器只执行一次
+ */
 @Component
-public class ValidatorCodeFilter extends OncePerRequestFilter {
+public class ImageValidatorCodeFilter extends OncePerRequestFilter {
 
   @Autowired private SecurityProperties securityProperties;
 
@@ -39,7 +42,7 @@ public class ValidatorCodeFilter extends OncePerRequestFilter {
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
 
-    for (String url : securityProperties.getCode().getUrls()) {
+    for (String url : securityProperties.getCode().getImage().getUrls()) {
       if (antPathMatcher.match(url, request.getRequestURI())) {
         // 需要进行验证码校验, 如果失败直接返回
         try {
