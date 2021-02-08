@@ -14,4 +14,6 @@ public class ValidatorCodeProperties {
     private Set<String> urls = new HashSet<>();
 
     private ImageCodeProperties image = new ImageCodeProperties();
+
+    private ValidateCodeProperties sms = new ValidateCodeProperties();
 }

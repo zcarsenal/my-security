@@ -32,7 +32,7 @@ public class ValidatorCodeFilter extends OncePerRequestFilter {
 
   private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 
-  private static final String SESSION_IMAGE_CODE = "IMAGE_CODE:SESSION_IMAGE_CODE";
+  private static final String SESSION_IMAGE_CODE = "IMAGE_CODE:SESSION_CODE_IMAGE";
 
   @Override
   protected void doFilterInternal(
@@ -75,5 +75,9 @@ public class ValidatorCodeFilter extends OncePerRequestFilter {
     if (!StringUtils.equalsIgnoreCase(image, imageCode.getCode())) {
       throw new ValidateCodeException("验证码输入有误");
     }
+
+    //验证通过删除验证码
+    sessionStrategy.removeAttribute(new ServletWebRequest(request, response), SESSION_IMAGE_CODE);
+
   }
 }

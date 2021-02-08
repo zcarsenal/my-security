@@ -1,6 +1,8 @@
 package com.imooc.config;
 
 import com.imooc.core.properties.SecurityProperties;
+import com.imooc.sms.DefaultSmsSender;
+import com.imooc.sms.SmsSender;
 import com.imooc.validator.ImageCodeGenerator;
 import com.imooc.validator.ValidatorCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +21,11 @@ public class ValidatorCodeConfig {
     ImageCodeGenerator imageCodeGenerator = new ImageCodeGenerator();
     imageCodeGenerator.setSecurityProperties(securityProperties);
     return imageCodeGenerator;
+  }
+
+  @Bean
+  @ConditionalOnMissingBean(SmsSender.class)
+  public SmsSender smsSender() {
+    return new DefaultSmsSender();
   }
 }

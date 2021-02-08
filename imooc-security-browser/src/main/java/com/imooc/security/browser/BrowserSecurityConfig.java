@@ -38,15 +38,14 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 
-  @Autowired
-  private DataSource dataSource;
+  @Autowired private DataSource dataSource;
 
   @Bean
-  public PersistentTokenRepository persistentTokenRepository(){
+  public PersistentTokenRepository persistentTokenRepository() {
     JdbcTokenRepositoryImpl persistentTokenRepository = new JdbcTokenRepositoryImpl();
-    //服务启动后自动创建相关表结构 true只能设置一次
+    // 服务启动后自动创建相关表结构 true只能设置一次
     persistentTokenRepository.setCreateTableOnStartup(false);
-    //数据源
+    // 数据源
     persistentTokenRepository.setDataSource(dataSource);
     return persistentTokenRepository;
   }
@@ -67,12 +66,15 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .rememberMe()
         .rememberMeParameter("re-me") // 修改页面name的值
-        .tokenRepository(persistentTokenRepository()) //设置持久化数据的CRUD
-        .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeExpireIn())    //设置记住我过期时间
+        .tokenRepository(persistentTokenRepository()) // 设置持久化数据的CRUD
+        .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeExpireIn()) // 设置记住我过期时间
         .and()
         .authorizeRequests()
         .antMatchers(
-            "/authentication/require", securityProperties.getBrowser().getLoginUrl(), "/code/image")
+            "/authentication/require",
+            securityProperties.getBrowser().getLoginUrl(),
+            "/code/image",
+            "/code/sms")
         .permitAll() // 不需要身份认证
         .anyRequest()
         .authenticated()
