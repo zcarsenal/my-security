@@ -12,6 +12,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -34,23 +38,38 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 
+  @Autowired
+  private DataSource dataSource;
+
+  @Bean
+  public PersistentTokenRepository persistentTokenRepository(){
+    JdbcTokenRepositoryImpl persistentTokenRepository = new JdbcTokenRepositoryImpl();
+    //服务启动后自动创建相关表结构 true只能设置一次
+    persistentTokenRepository.setCreateTableOnStartup(false);
+    //数据源
+    persistentTokenRepository.setDataSource(dataSource);
+    return persistentTokenRepository;
+  }
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.formLogin()
+    http.addFilterBefore(validatorCodeFilter, UsernamePasswordAuthenticationFilter.class)
+        .formLogin()
         //        .loginPage("/my_login.html") // 自定义登录页面
         .loginPage("/authentication/require") // 先跳转到controller 在进行转发到html还是json
         .usernameParameter("username1")
         .passwordParameter("password1")
         // 告知spring-security 使用UsernamePasswordAuthenticationFilter处理认证请求
         .loginProcessingUrl("/myLogin")
-        //  http.httpBasic()
-        //        .and()
-        //        .rememberMe()
-        //        .rememberMeParameter("re-me")
         .successHandler(imoocAuthenticationSuccessHandler)
         .failureHandler(imoocAuthenticationFailureHandler)
+        //  http.httpBasic()
         .and()
-        .addFilterBefore(validatorCodeFilter, UsernamePasswordAuthenticationFilter.class)
+        .rememberMe()
+        .rememberMeParameter("re-me") // 修改页面name的值
+        .tokenRepository(persistentTokenRepository()) //设置持久化数据的CRUD
+        .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeExpireIn())    //设置记住我过期时间
+        .and()
         .authorizeRequests()
         .antMatchers(
             "/authentication/require", securityProperties.getBrowser().getLoginUrl(), "/code/image")

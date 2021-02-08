@@ -9,5 +9,6 @@ public class BrowserProperties {
 
   private LoginType loginType = LoginType.JSON;
 
+  private int rememberMeExpireIn = 60;
 
 }
