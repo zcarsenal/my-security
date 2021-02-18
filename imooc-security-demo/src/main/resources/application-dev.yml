@@ -28,6 +28,12 @@ spring:
     timeout: 30000 # 连接超时时间（毫秒）
 imooc:
   security:
+    social:
+      qq:
+        app-id: 100550231
+        app-secret: 4444444444444
+        provider-id: callback.do
+        filterProcessesUrl: /qqLogin
     browser:
       login-type: JSON
     code:

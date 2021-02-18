@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.social.security.SocialUser;
+import org.springframework.social.security.SocialUserDetails;
+import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,7 +18,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class MyUserDetailsService implements UserDetailsService {
+public class MyUserDetailsService implements UserDetailsService , SocialUserDetailsService {
 
   @Autowired private SysUserService sysUserService;
 
@@ -37,5 +40,13 @@ public class MyUserDetailsService implements UserDetailsService {
     log.info("password is {}", password);
     return new MyUserDetail(
         username, password, true, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+  }
+
+  @Override
+  public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException {
+    String password = passwordEncoder.encode("123456");
+    log.info("password is {}", password);
+    return new SocialUser(
+            userId, password, true,true,true,true, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
   }
 }

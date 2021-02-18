@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.social.config.annotation.SocialConfigurerAdapter;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
 
@@ -32,6 +34,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired private SmsValidatorCodeFilter smsValidatorCodeFilter;
 
   @Autowired private SmsAuthenticationConfig smsAuthenticationConfig;
+
+  @Autowired private SpringSocialConfigurer imoocSpringSocialConfigurer;
 
   /**
    * 用户数据加密类
@@ -65,7 +69,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         .usernameParameter("username1")
         .passwordParameter("password1")
         // 告知spring-security 使用UsernamePasswordAuthenticationFilter处理认证请求
-        .loginProcessingUrl("/myLogin") //默认是login
+        .loginProcessingUrl("/myLogin") // 默认是login
         .successHandler(imoocAuthenticationSuccessHandler)
         .failureHandler(imoocAuthenticationFailureHandler)
         //  http.httpBasic()
@@ -80,13 +84,16 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
             "/authentication/require",
             securityProperties.getBrowser().getLoginUrl(),
             "/code/image",
-            "/code/sms")
+            "/code/sms",
+            "/auth/qq")
         .permitAll() // 不需要身份认证
         .anyRequest()
         .authenticated()
         .and()
         .csrf()
         .disable() // 不关闭此处 登录不成功
-        .apply(smsAuthenticationConfig); // 引入其他的配置信息
+        .apply(smsAuthenticationConfig) // 引入其他的配置信息
+        .and()
+        .apply(imoocSpringSocialConfigurer);
   }
 }
