@@ -30,10 +30,10 @@ imooc:
   security:
     social:
       qq:
-        app-id: 100550231
-        app-secret: 4444444444444
-        provider-id: callback.do
-        filterProcessesUrl: /qqLogin
+        app-id: 101937742
+        app-secret: 64a9781df13caf3ead85c9a27bce86c9
+        provider-id: qq
+        filterProcessesUrl: /auth
     browser:
       login-type: JSON
     code:

@@ -84,8 +84,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
             "/authentication/require",
             securityProperties.getBrowser().getLoginUrl(),
             "/code/image",
-            "/code/sms",
-            "/auth/qq")
+            "/code/sms")
         .permitAll() // 不需要身份认证
         .anyRequest()
         .authenticated()
